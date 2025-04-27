@@ -1,8 +1,16 @@
 const express = require('express');
+const cors = require('cors');
 const path = require('node:path');
 
 const app = express();
 const port = 4000;
+
+var corsOptions = {
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200 // For legacy browser support
+}
+
+app.use(cors(corsOptions));
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
