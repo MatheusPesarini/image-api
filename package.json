@@ -20,6 +20,7 @@
   "homepage": "https://github.com/MatheusPesarini/image-api#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "multer": "^1.4.5-lts.2"
   }
 }
