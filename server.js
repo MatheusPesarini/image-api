@@ -10,6 +10,9 @@ const port = 4000;
 const imagesBaseDir = path.join(__dirname, 'images');
 fs.mkdirSync(imagesBaseDir, { recursive: true });
 
+const homeImagesDir = path.join(imagesBaseDir, 'home');
+fs.mkdirSync(homeImagesDir, { recursive: true });
+
 app.use(express.json());
 
 const storage = multer.diskStorage({
@@ -110,21 +113,20 @@ app.post('/delete-image', async (req, res) => {
 });
 
 app.get('/images/home', (req, res) => {
-  const homeImagesPath = imagesBaseDir;
-  fs.readdir(homeImagesPath, (err, files) => {
+  fs.readdir(homeImagesDir, (err, files) => {
     if (err) {
       if (err.code === 'ENOENT') {
-        console.error("Diretório não encontrado:", homeImagesPath);
-        return res.status(404).json({ message: "Diretório de imagens não encontrado." });
+        console.error("Diretório não encontrado:", homeImagesDir);
+        return res.status(404).json({ message: "Diretório de imagens da home não encontrado." });
       }
-      console.error("Erro ao ler o diretório de imagens:", err);
-      return res.status(500).json({ message: "Erro ao buscar imagens." });
+      console.error("Erro ao ler o diretório de imagens da home:", err);
+      return res.status(500).json({ message: "Erro ao buscar imagens da home." });
     }
 
     const imageUrls = files
       .filter(file => /\.(jpe?g|png|webp)$/i.test(file))
       .map(file => ({
-        src: `${req.protocol}://${req.get('host')}/images/${file}`,
+        src: `${req.protocol}://${req.get('host')}/images/home/${file}`,
         alt: `Imagem ${file}`
       }));
     res.json(imageUrls);
