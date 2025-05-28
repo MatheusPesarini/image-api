@@ -13,6 +13,9 @@ fs.mkdirSync(imagesBaseDir, { recursive: true });
 const homeImagesDir = path.join(imagesBaseDir, 'home');
 fs.mkdirSync(homeImagesDir, { recursive: true });
 
+const sectionsImageDir = path.join(imagesBaseDir, 'sections');
+fs.mkdirSync(sectionsImageDir, { recursive: true });
+
 app.use(express.json());
 
 const storage = multer.diskStorage({
@@ -133,6 +136,26 @@ app.get('/images/home', (req, res) => {
   });
 });
 
+app.get('/images/sections', (req, res) => {
+  fs.readdir(sectionsImageDir, (err, files) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        console.error("Diretório não encontrado:", sectionsImageDir);
+        return res.status(404).json({ message: "Diretório de imagens da home não encontrado." });
+      }
+      console.error("Erro ao ler o diretório de imagens da home:", err);
+      return res.status(500).json({ message: "Erro ao buscar imagens da home." });
+    }
+
+    const imageUrls = files
+      .filter(file => /\.(jpe?g|png|webp)$/i.test(file))
+      .map(file => ({
+        src: `${req.protocol}://${req.get('host')}/images/sections/${file}`,
+        alt: `Imagem ${file}`
+      }));
+    res.json(imageUrls);
+  });
+});
 
 app.get('/', (req, res) => {
   res.send('Servidor Express de imagens local está funcionando!');
